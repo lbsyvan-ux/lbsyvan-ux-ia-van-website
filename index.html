@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA'van - Automatisation pour Gestion de Patrimoine</title>
+
+    <!-- Police Epilogue -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- CSS Google Calendar -->
+    <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+
+    <!-- Configuration Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Epilogue', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#045c8f',
+                            dark: '#023e61',
+                            bg: '#f8fafc',
+                            light: '#e6e6e6'
+                        }
+                    },
+                    boxShadow: {
+                        'natural': '6px 6px 9px rgba(0, 0, 0, 0.2)',
+                        'deep': '12px 12px 50px rgba(0, 0, 0, 0.15)',
+                        'glow': '0 0 20px rgba(4, 92, 143, 0.15)'
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'scroll': 'scroll 30s linear infinite',
+                        'bounce-subtle': 'bounceSubtle 2s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        scroll: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Icônes -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- JS Google Calendar -->
+    <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+
+    <style>
+        /* Styles pour les animations au scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Masquer la scrollbar pour le marquee et le chat */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Chatbot Styles */
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-brand-bg text-gray-800 antialiased overflow-x-hidden selection:bg-brand-blue selection:text-white relative">
+
+    <!-- NAVBAR FLOTTANTE -->
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300"
+        id="navbar">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div
+                    class="w-8 h-8 bg-brand-blue rounded-full flex items-center justify-center text-white font-bold text-xs">
+                    <img src="logo.png" class="w-full h-full rounded-full object-cover">
+                </div>
+                <span class="font-bold text-gray-900 tracking-tight">IA'van</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
+                <a href="#a-propos" class="hover:text-brand-blue transition-colors text-brand-blue font-bold">À
+                    propos</a>
+                <a href="#services" class="hover:text-brand-blue transition-colors">Services</a>
+                <a href="#etude" class="hover:text-brand-blue transition-colors">Étude</a>
+                <a href="#portfolio" class="hover:text-brand-blue transition-colors">Réalisations</a>
+                <a href="#avis" class="hover:text-brand-blue transition-colors">Avis</a>
+            </div>
+            <a href="#rdv"
+                class="px-4 py-2 bg-brand-blue text-white text-sm font-semibold rounded-full hover:bg-brand-dark transition-colors shadow-lg shadow-brand-blue/30">
+                Prendre RDV
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 max-w-7xl mx-auto px-6 overflow-hidden">
+        <!-- Décoration d'arrière-plan (Blob flou) -->
+        <div
+            class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-50 -z-10 animate-pulse">
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+            <!-- Colonne Gauche : Texte -->
+            <div class="flex flex-col items-start space-y-6 reveal active order-1">
+                <!-- Badge -->
+
+                <!-- Titre Principal -->
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-gray-900">
+                    L'automatisation conçue pour les
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-cyan-500">cabinets de
+                        gestion de patrimoine</span>
+                </h1>
+
+                <p class="text-lg text-gray-600 max-w-lg leading-relaxed">
+                    Libérez-vous des tâches administratives. Je crée des systèmes sur-mesure pour que vous puissiez vous
+                    concentrer sur vos clients.
+                </p>
+
+                <!-- Boutons -->
+                <div class="flex flex-wrap gap-4 mt-2">
+                    <a href="#rdv"
+                        class="bg-brand-blue text-white font-semibold py-4 px-8 shadow-deep hover:shadow-lg hover:scale-105 transition-all duration-300 rounded-tr-[30px] rounded-bl-[30px]">
+                        Discuter de votre projet
+                    </a>
+                    <a href="#portfolio"
+                        class="group flex items-center gap-2 px-6 py-4 text-gray-600 font-medium hover:text-brand-blue transition-colors">
+                        Voir un exemple <i data-lucide="arrow-down"
+                            class="w-4 h-4 group-hover:translate-y-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Colonne Droite : Image Hero (Positionnée à Droite) -->
+            <div class="relative w-full h-full flex justify-center reveal delay-200 order-2">
+                <div class="relative w-full max-w-md aspect-[3/4] animate-float">
+                    <div
+                        class="absolute -inset-4 bg-gradient-to-tr from-brand-blue to-cyan-300 rounded-[2rem] opacity-20 blur-lg">
+                    </div>
+
+                    <div
+                        class="relative w-full h-full overflow-hidden shadow-2xl rounded-t-3xl rounded-bl-[80px] rounded-br-[80px] z-10">
+                        <img src="moi.JPEG" alt="Portrait Fondateur"
+                            class="w-full h-full object-cover scale-110 origin-center"
+                            onerror="this.src='https://placehold.co/400x500?text=Portrait'">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BANDEAU OUTILS (INFINITE SCROLL) -->
+    <div class="py-10 bg-white border-y border-gray-100 overflow-hidden relative">
+        <div class="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10"></div>
+
+        <div class="flex w-[200%] animate-scroll hover:pause">
+            <!-- Liste 1 -->
+            <div
+                class="flex items-center justify-around w-1/2 px-8 gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="zap"
+                        class="text-purple-600"></i> Make</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="database"
+                        class="text-blue-600"></i> Airtable</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="bot" class="text-green-600"></i>
+                    ChatGPT API</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="file-text"
+                        class="text-red-500"></i> PDF Extractor</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="code"
+                        class="text-yellow-600"></i> Python</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="layout" class="text-black"></i>
+                    Notion</span>
+            </div>
+            <!-- Liste 2 (Duplication pour l'effet infini) -->
+            <div
+                class="flex items-center justify-around w-1/2 px-8 gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="zap"
+                        class="text-purple-600"></i> Make</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="database"
+                        class="text-blue-600"></i> Airtable</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="bot" class="text-green-600"></i>
+                    ChatGPT API</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="file-text"
+                        class="text-red-500"></i> PDF Extractor</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="code"
+                        class="text-yellow-600"></i> Python</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i data-lucide="layout" class="text-black"></i>
+                    Notion</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION QUI SUIS-JE -->
+    <section id="a-propos" class="py-24 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+                <!-- Colonne Gauche : Image -->
+                <div class="relative reveal order-2 lg:order-1">
+                    <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl shadow-brand-blue/20">
+                        <img src="moi.JPEG" alt="Yvan" class="w-full h-auto object-cover max-h-[600px] scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-blue/20 to-transparent"></div>
+                    </div>
+                    <!-- Éléments décoratifs -->
+                    <div class="absolute -top-6 -left-6 w-24 h-24 bg-brand-blue/10 rounded-full blur-2xl animate-pulse">
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-cyan-100/50 rounded-full blur-3xl"></div>
+                </div>
+
+                <!-- Colonne Droite : Texte -->
+                <div class="space-y-8 reveal delay-100 order-1 lg:order-2">
+                    <div class="space-y-4">
+                        <span
+                            class="text-brand-blue font-bold tracking-widest uppercase text-xs flex items-center gap-2">
+                            <span class="w-10 h-[2px] bg-brand-blue"></span> Le visage derrière IA'van
+                        </span>
+                        <h2 class="text-3xl md:text-5xl font-bold text-gray-900 leading-tight">
+                            Qui suis-je ?
+                        </h2>
+                    </div>
+
+                    <div class="space-y-6 text-gray-600 leading-relaxed text-lg">
+                        <p>
+                            Je m'appelle <strong>Yvan Le Bras-Sancho</strong>. Passionné par l'innovation et
+                            l'efficacité, j'ai créé IA'van pour répondre à un besoin concret : simplifier le quotidien
+                            des CGP.
+                        </p>
+                        <p>
+                            Mon parcours a commencé par un stage dans un cabinet de gestion de patrimoine où j'ai
+                            remarqué plusieurs endroits de friction qui faisait perdre un temps fou inutilement. Ainsi,
+                            j'ai décidé de lancer mon cabinet IA'van avec une
+                            volonté profonde d'apporter de la valeur là où elle compte vraiment : en libérant votre
+                            temps pour vos clients. Les clients sont plus satisfaits, observant une qualité de service
+                            vous démarquant de la concurrence.
+                        </p>
+                        <p class="italic text-brand-dark font-medium border-l-4 border-brand-blue pl-6 py-2">
+                            "Mon objectif n'est pas de remplacer l'humain, mais de lui redonner sa place centrale en
+                            éliminant les frottements administratifs."
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-6 pt-4">
+                        <a href="#rdv"
+                            class="bg-brand-blue text-white font-semibold py-4 px-8 rounded-tr-[25px] rounded-bl-[25px] hover:bg-brand-dark transition-all duration-300 shadow-lg shadow-brand-blue/20">
+                            Me contacter
+                        </a>
+                        <div class="flex gap-4">
+                            <a href="https://www.linkedin.com/in/yvan-le-bras-sancho-33a526328/" target="_blank"
+                                class="w-12 h-12 bg-gray-50 text-brand-blue rounded-full flex items-center justify-center hover:bg-brand-blue hover:text-white transition-all shadow-sm">
+                                <i data-lucide="linkedin" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section id="services" class="bg-gray-50 py-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl font-bold text-gray-900">Ma méthodologie</h2>
+                <p class="text-gray-500 mt-2">Une approche structurée pour digitaliser votre cabinet.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Carte 1 -->
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 reveal group">
+                    <div
+                        class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-blue group-hover:text-white transition-colors">
+                        <i data-lucide="search-check" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Audit & Conception</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm">Une écoute active et professionnelle de vos besoins
+                        pour répondre au mieux à vos attentes.</p>
+                </div>
+
+                <!-- Carte 2 -->
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 reveal delay-100 group">
+                    <div
+                        class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-blue group-hover:text-white transition-colors">
+                        <i data-lucide="user" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Contact rapide et agréable</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm">Une question ? Un doute ? Je suis à vos côtés à
+                        chaque étape du processus. Comptez sur moi pour vous répondre rapidement et avec le sourire !
+                    </p>
+                </div>
+
+                <!-- Carte 3 -->
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 reveal delay-200 group">
+                    <div
+                        class="w-14 h-14 bg-blue-50 text-brand-blue rounded-xl flex items-center justify-center mb-6 group-hover:bg-brand-blue group-hover:text-white transition-colors">
+                        <i data-lucide="life-buoy" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Maintenance & Support</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm">Suivi de vos automatisations et gestion des
+                        éventuelles erreurs, surtout une fois déployées.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION ETUDE DE MARCHE -->
+    <section id="etude" class="bg-brand-blue text-white py-20 relative overflow-hidden">
+        <!-- Fond graphique géométrique -->
+        <svg class="absolute top-0 left-0 transform -translate-x-1/2 -translate-y-1/2 opacity-10 w-[800px] h-[800px]"
+            fill="none" viewBox="0 0 200 200">
+            <defs>
+                <pattern id="grid-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="2" height="2" fill="currentColor" />
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+        </svg>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-1/2 space-y-8 reveal">
+                    <div
+                        class="inline-block px-4 py-1.5 bg-blue-800/50 backdrop-blur border border-blue-400/30 text-blue-100 rounded-full text-xs font-bold uppercase tracking-wider">
+                        L'Insight Marché
+                    </div>
+                    <h2 class="text-3xl md:text-5xl font-bold leading-tight">
+                        L'IA : Une révolution inévitable pour la gestion de patrimoine
+                    </h2>
+                    <p class="text-blue-100 text-lg leading-relaxed">
+                        Selon une étude de <a
+                            href="https://www.wealthcome.fr/blog/limpact-de-lintelligence-artificielle-sur-la-gestion-de-patrimoine"
+                            target="_blank" class=" hover:underline font-semibold">Wealthcome</a>, l'IA n'est plus une
+                        option. C'est le levier qui permet aux cabinets modernes de scaler sans perdre en qualité de
+                        conseil.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+                        <div
+                            class="bg-white/10 p-4 rounded-lg border border-white/10 hover:bg-white/20 transition-colors">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-cyan-300 mb-2"></i>
+                            <strong class="block text-white text-lg">+40%</strong>
+                            <span class="text-blue-200 text-sm">de productivité admin</span>
+                        </div>
+                        <div
+                            class="bg-white/10 p-4 rounded-lg border border-white/10 hover:bg-white/20 transition-colors">
+                            <i data-lucide="users" class="w-6 h-6 text-cyan-300 mb-2"></i>
+                            <strong class="block text-white text-lg">100%</strong>
+                            <span class="text-blue-200 text-sm">Hyper-Personnalisation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:w-1/2 reveal delay-200">
+                    <div
+                        class="bg-white/10 p-10 rounded-3xl backdrop-blur-md border border-white/20 shadow-2xl relative">
+                        <i data-lucide="quote" class="w-12 h-12 text-blue-300/30 absolute top-6 left-6"></i>
+                        <blockquote class="text-xl md:text-2xl font-light italic relative z-10 leading-relaxed">
+                            "L'IA ne remplace pas le conseiller humain, elle l'augmente. Elle libère du temps
+                            administratif pour renforcer la relation de confiance et l'empathie."
+                        </blockquote>
+                        <div class="mt-8 flex items-center gap-4">
+                            <div
+                                class="w-10 h-10 rounded-full bg-blue-400 flex items-center justify-center font-bold text-brand-blue">
+                                W</div>
+                            <div>
+                                <p class="text-sm font-bold text-white">Étude Wealthcome</p>
+                                <p class="text-xs text-blue-200">Impact de l'IA sur la Gestion de Patrimoine</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO / EXEMPLE PRINCIPAL -->
+    <section id="portfolio" class="py-24 max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-end mb-12 reveal">
+            <!-- Texte Explicatif -->
+            <div class="lg:col-span-2 space-y-4">
+                <span class="text-brand-blue font-bold tracking-wide uppercase text-sm flex items-center gap-2">
+                    <span class="w-8 h-[2px] bg-brand-blue"></span> Réalisation Phare
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Synthèse de contrat intelligente</h2>
+                <p class="text-lg text-gray-600 max-w-2xl">
+                    Création automatisée d'une synthèse ultra-visuelle d'un contrat d'assurance vie à partir d'un simple
+                    PDF. <br>
+                </p>
+            </div>
+        </div>
+
+        <!-- Grande Image Portfolio avec effet de profondeur -->
+        <div
+            class="w-full relative rounded-2xl p-2 bg-gradient-to-b from-gray-100 to-white border border-gray-200 shadow-2xl reveal delay-100 group">
+            <div class="relative rounded-xl overflow-hidden bg-white">
+                <div
+                    class="absolute inset-0 bg-brand-blue/0 group-hover:bg-brand-blue/5 transition-colors duration-500 z-10 pointer-events-none">
+                </div>
+                <img src="Test 2.png" alt="Interface Automatisation Assurance Vie"
+                    class="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-700 ease-out"
+                    onerror="this.src='https://placehold.co/1200x700?text=Dashboard+Synthesis'">
+            </div>
+
+            <!-- Badge Client Flottant -->
+            <div
+                class="absolute bottom-8 right-8 bg-white/90 backdrop-blur p-4 rounded-lg shadow-lg border border-gray-100 z-20 flex items-center gap-4 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                <img src="image_feb345.png" class="w-10 h-10 rounded-full object-cover"
+                    onerror="this.src='https://placehold.co/40?text=JD'">
+                <div>
+                    <p class="text-xs text-gray-500 font-bold uppercase">Client validé</p>
+                    <p class="text-sm font-bold text-gray-900">Julien Domingues</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10 CAS D'USAGE (GRID INTERACTIVE) -->
+    <section class="py-20 bg-gray-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">L'automatisation au-delà de la synthèse</h2>
+                <p class="text-gray-600">Voici des automatisations dont vous avez besoin aujourd'hui.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <!-- Template de carte interactive -->
+                <div
+                    class="p-6 bg-white rounded-xl border border-gray-200 hover:border-brand-blue hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group reveal">
+                    <div
+                        class="w-10 h-10 bg-blue-50 text-brand-blue rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="file-check" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-1 text-sm">Gestion du CRM</h3>
+                    <p class="text-xs text-gray-500 leading-snug">Remplissage automatique dans votre CRM.</p>
+                </div>
+
+                <div
+                    class="p-6 bg-white rounded-xl border border-gray-200 hover:border-brand-blue hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group reveal delay-100">
+                    <div
+                        class="w-10 h-10 bg-blue-50 text-brand-blue rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-1 text-sm">Gestion des emails</h3>
+                    <p class="text-xs text-gray-500 leading-snug">Création d'un brouillon à partir d'un appel Google
+                        Meet.</p>
+                </div>
+
+                <div
+                    class="p-6 bg-white rounded-xl border border-gray-200 hover:border-brand-blue hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group reveal delay-200">
+                    <div
+                        class="w-10 h-10 bg-blue-50 text-brand-blue rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="calendar-days" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-1 text-sm">Secrétaire</h3>
+                    <p class="text-xs text-gray-500 leading-snug">Création d'un secrétaire IA via Whatsapp/Telegram.
+                    </p>
+                </div>
+
+                <div
+                    class="p-6 bg-white rounded-xl border border-gray-200 hover:border-brand-blue hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group reveal delay-100">
+                    <div
+                        class="w-10 h-10 bg-blue-50 text-brand-blue rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="app-window-mac" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-1 text-sm">Application</h3>
+                    <p class="text-xs text-gray-500 leading-snug">Création d'applications visuelles pour vous organiser
+                        et mieux gérer vos données. </p>
+                </div>
+
+                <div
+                    class="p-6 bg-white rounded-xl border border-gray-200 hover:border-brand-blue hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group reveal">
+                    <div
+                        class="w-10 h-10 bg-blue-50 text-brand-blue rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="mic" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-1 text-sm">Compte-Rendu</h3>
+                    <p class="text-xs text-gray-500 leading-snug">Transcription et synthèse IA des réunions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEMOIGNAGES -->
+    <section id="avis" class="bg-white py-24 relative overflow-hidden">
+        <!-- Déco -->
+        <div
+            class="absolute -left-20 top-20 w-64 h-64 bg-yellow-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob">
+        </div>
+        <div
+            class="absolute -right-20 bottom-20 w-64 h-64 bg-pink-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10 reveal">
+            <h2 class="text-3xl font-bold mb-12 text-gray-800">Ce qu'en disent les CGP</h2>
+
+            <div class="bg-white p-12 rounded-2xl shadow-xl border border-gray-100 relative mx-4 md:mx-0">
+                <i data-lucide="quote" class="w-16 h-16 text-gray-100 absolute top-8 left-8"></i>
+
+                <!-- Image Client -->
+                <div class="absolute -top-10 left-1/2 transform -translate-x-1/2">
+                    <img src="image_feb345.png" alt="Julien Domingues"
+                        class="w-20 h-20 rounded-full border-4 border-white shadow-md object-cover"
+                        onerror="this.src='https://placehold.co/100x100?text=JD'">
+                </div>
+
+                <div class="mt-8 relative z-10">
+                    <div class="flex justify-center text-yellow-400 my-4 space-x-1">
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                    <blockquote class="text-2xl font-medium text-gray-700 leading-relaxed">
+                        " Yvan est à l'écoute de ses clients et propose des solutions adaptées à leurs besoins tout en
+                        offrant un suivi qualitatif. Je recommande. "
+                    </blockquote>
+                    <div class="mt-6">
+                        <a href="https://www.linkedin.com/in/juliendomingues/" target="_blank"
+                            class="hover:underline">Julien Domingues</a>
+                        <p class="text-sm text-gray-500">CEO de Kapex Wealth Management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA & CALENDRIER -->
+    <section id="rdv" class="py-24 bg-brand-bg relative">
+        <div class="max-w-4xl mx-auto px-6 text-center space-y-4 reveal">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">Prêt à gagner du temps ?</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Discutons de vos processus actuels. L'appel découverte de 15/30 minutes est gratuit et sans engagement.
+                Ou contactez-moi par mail : service@ia-van.fr
+            </p>
+
+            <!-- Conteneur du bouton Google Calendar -->
+            <div id="calendar-container"></div>
+            <script>
+                    (function () {
+                        var target = document.getElementById('calendar-container');
+                        window.addEventListener('load', function () {
+                            calendar.schedulingButton.load({
+                                url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3_c44s1kOmgHhcyPS2ybdIChyYWb8pt3T-lrE9U_vaSJqhnWvhuBoc78hixCFoNkDkRva0-ilj?gv=true',
+                                color: '#045c8f',
+                                label: 'Réserver mon audit gratuit',
+                                target,
+                            });
+                        });
+                    })();
+            </script>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-dark text-white py-16 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center space-x-2">
+                <div
+                    class="w-8 h-8 bg-white text-brand-blue rounded-full flex items-center justify-center font-bold text-xs">
+                    <img src="logo.png" class="w-full h-full rounded-full object-cover">
+                </div>
+                <span class="font-bold tracking-tight text-lg">IA'van</span>
+            </div>
+
+            <div class="text-sm text-gray-300 text-center md:text-right">
+                <p>&copy; 2025 IA'van. Tous droits réservés.</p>
+                <div class="flex space-x-6 justify-center md:justify-end mt-4">
+                    <a href="https://www.linkedin.com/in/yvan-le-bras-sancho-33a526328/" target="_blank"
+                        class="hover:text-white transition-colors"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                    <a href="https://www.instagram.com/ia._van/" target="_blank"
+                        class="hover:text-white transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CHATBOT WIDGET -->
+    <div id="chat-widget" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <!-- Fenêtre de Chat (Cachée par défaut) -->
+        <div id="chat-window"
+            class="hidden w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden mb-4 transform transition-all duration-300 origin-bottom-right scale-90 opacity-0">
+            <!-- Header Chat -->
+            <div class="bg-brand-blue p-4 flex items-center justify-between text-white">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                        <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm">Assistant IA'van</p>
+                        <p class="text-xs text-blue-100 flex items-center gap-1"><span
+                                class="w-2 h-2 bg-green-400 rounded-full"></span> En ligne</p>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="text-white/80 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Messages -->
+            <div id="chat-messages" class="h-80 overflow-y-auto p-4 bg-gray-50 space-y-4">
+                <!-- Message Intro -->
+                <div class="flex items-start gap-2.5">
+                    <div
+                        class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs flex-shrink-0">
+                        <img src="logo.png" class="w-full h-full rounded-full object-cover">
+                    </div>
+                    <div class="flex flex-col gap-1 w-full max-w-[320px]">
+                        <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                            <span class="text-sm font-semibold text-gray-900">IA'van</span>
+                            <span class="text-xs font-normal text-gray-500">Maintenant</span>
+                        </div>
+                        <div
+                            class="flex flex-col leading-1.5 p-4 border-gray-200 bg-white rounded-e-xl rounded-es-xl shadow-sm">
+                            <p class="text-sm font-normal text-gray-900">Bonjour ! 👋 Je suis l'assistant virtuel.
+                                Posez-moi une question sur l'automatisation de votre cabinet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input -->
+            <div class="p-4 bg-white border-t border-gray-100">
+                <form onsubmit="sendMessage(event)" class="flex items-center gap-2">
+                    <input type="text" id="chat-input"
+                        class="flex-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-brand-blue focus:border-brand-blue block w-full p-2.5 px-4 outline-none"
+                        placeholder="Écrivez votre message..." required>
+                    <button type="submit" class="p-2.5 text-brand-blue hover:bg-blue-50 rounded-full transition-colors">
+                        <i data-lucide="send-horizontal" class="w-5 h-5"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Bouton Flottant (FAB) -->
+        <button onclick="toggleChat()"
+            class="w-14 h-14 bg-brand-blue hover:bg-brand-dark text-white rounded-full shadow-lg hover:shadow-glow flex items-center justify-center transition-all duration-300 animate-bounce-subtle group">
+            <i data-lucide="message-circle" class="w-7 h-7 group-hover:scale-110 transition-transform"></i>
+        </button>
+    </div>
+
+    <!-- Script pour l'animation au scroll et Chatbot -->
+    <script>
+        lucide.createIcons();
+
+        // Animation Scroll
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { root: null, threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            if (!win) return;
+            if (win.classList.contains('hidden')) {
+                win.classList.remove('hidden');
+                setTimeout(() => win.classList.remove('scale-90', 'opacity-0'), 10);
+            } else {
+                win.classList.add('scale-100', 'opacity-100'); // S'assurer que les classes d'opacité sont gérées
+                win.classList.add('scale-90', 'opacity-0');
+                setTimeout(() => win.classList.add('hidden'), 500);
+            }
+        }
+
+        async function sendMessage(e) {
+            if (e) e.preventDefault();
+
+            const input = document.getElementById('chat-input');
+            const message = input.value ? input.value.trim() : "";
+
+            if (!message) return;
+
+            // 1. Afficher le message de l'utilisateur
+            addMessage(message, 'user');
+            input.value = '';
+
+            // 2. Afficher l'indicateur de chargement
+            const typingId = showTypingIndicator();
+
+            try {
+                // URL n8n (pense à bien cliquer sur "Execute Workflow" dans n8n avant de tester)
+                const n8nUrl = 'https://n8n.ia-van.fr/webhook/chat-iavan';
+
+                console.log("Envoi du message à n8n...");
+
+                const response = await fetch(n8nUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                if (!response.ok) throw new Error("Erreur réseau (Statut: " + response.status + ")");
+
+                const data = await response.json();
+                console.log("Réponse reçue de n8n:", data);
+
+                removeTypingIndicator(typingId);
+
+                // n8n renvoie la réponse dans le champ 'output' par défaut
+                const botReply = data.output || "Désolé, je n'ai pas pu formuler de réponse.";
+                addMessage(botReply, 'ai');
+
+            } catch (error) {
+                console.error("Erreur lors de l'appel n8n:", error);
+                removeTypingIndicator(typingId);
+                addMessage("Désolé, je rencontre une erreur de connexion : " + error.message, 'ai');
+            }
+        }
+
+        function addMessage(txt, sender) {
+            const container = document.getElementById('chat-messages');
+            if (!container) {
+                console.error("Erreur: L'élément #chat-messages est introuvable dans le HTML.");
+                return;
+            }
+
+            const isUser = sender === 'user';
+            const html = `
+                <div class="flex items-start gap-3 ${isUser ? 'flex-row-reverse' : ''}">
+                    <div class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs flex-shrink-0">
+                        ${isUser ? 'MOI' : '<img src="logo.png" class="w-full h-full rounded-full object-cover">'}
+                    </div>
+                    <div class="p-4 ${isUser ? 'bg-brand-blue text-white rounded-2xl rounded-tr-none' : 'bg-white text-gray-800 rounded-2xl rounded-tl-none border border-gray-100'} shadow-sm max-w-[85%] text-sm leading-relaxed">
+                        ${txt}
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+            container.scrollTop = container.scrollHeight;
+
+            // Si Lucide est disponible, on rafraîchit les icônes (optionnel ici)
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function showTypingIndicator() {
+            const container = document.getElementById('chat-messages');
+            if (!container) return null;
+
+            const id = 'typing-' + Date.now();
+            const html = `
+                <div id="${id}" class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs flex-shrink-0"><img src="logo.png" class="w-full h-full rounded-full object-cover"></div>
+                    <div class="p-6 bg-white rounded-2xl rounded-tl-none border border-gray-100 flex items-center h-10 shadow-sm">
+                        <div class="dot-pulse"></div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function removeTypingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+    </script>
+</body>
+
+</html>
