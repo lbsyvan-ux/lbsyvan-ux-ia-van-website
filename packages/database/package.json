@@ -1,0 +1,22 @@
+{
+  "name": "@crm/database",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev"
+    },
+    "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+    },
+    "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@types/node": "^20.19.41",
+    "prisma": "^6.19.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,16 @@
+node_modules
+.env
+.env.*
+!.env.example
+.turbo
+.next
+dist
+build
+*.log
+self_client.json
+.DS_Store
+*.pem
+out
+coverage
+.vercel
+*.tsbuildinfo

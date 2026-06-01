@@ -1,0 +1,96 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  role          Role      @default(ADVISOR)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  clients       Client[]
+  auditLogs     AuditLog[]
+}
+
+enum Role {
+  ADMIN
+  ADVISOR
+}
+
+model Client {
+  id              String    @id @default(cuid())
+  firstName       String
+  lastName        String
+  email           String?
+  phone           String?
+  status          ClientStatus @default(LEAD)
+  advisorId       String
+  advisor         User      @relation(fields: [advisorId], references: [id])
+  forms           Form[]
+  documents       Document[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  auditLogs       AuditLog[]
+}
+
+enum ClientStatus {
+  LEAD
+  PROSPECT
+  ACTIVE
+  INACTIVE
+}
+
+model Form {
+  id              String    @id @default(cuid())
+  type            String    // e.g., "APPEL_DECOUVERTE", "KYC"
+  data            Json      // The structured data from LLM or manual entry
+  status          FormStatus @default(DRAFT)
+  clientId        String
+  client          Client    @relation(fields: [clientId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  auditLogs       AuditLog[]
+}
+
+enum FormStatus {
+  DRAFT
+  PENDING_VALIDATION
+  VALIDATED
+  SIGNED
+}
+
+model Document {
+  id              String    @id @default(cuid())
+  name            String
+  url             String    // S3 URL
+  type            String    // e.g., "PDF", "IMAGE"
+  clientId        String
+  client          Client    @relation(fields: [clientId], references: [id])
+  createdAt       DateTime  @default(now())
+}
+
+model AuditLog {
+  id              String    @id @default(cuid())
+  action          String    // e.g., "CLIENT_CREATED", "FORM_VALIDATED"
+  entityId        String?
+  entityType      String?   // e.g., "Client", "Form"
+  details         Json?
+  
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  
+  clientId        String?
+  client          Client?    @relation(fields: [clientId], references: [id])
+  
+  formId          String?
+  form            Form?      @relation(fields: [formId], references: [id])
+  
+  createdAt       DateTime  @default(now())
+}
